@@ -1,21 +1,4 @@
 
-CREATE TABLE Administration (
-    EmployeeID int,
-    FirstName varchar(255),
-    LastName varchar(255),
-    BirthDate date,
-    EducationalBackground varchar(255),
-    JobTitle varchar(255),
-    HireDate date,
-    Salary int,
-    PhoneNumber int,
-    Country varchar(255),
-    City varchar(255),
-    BankAccountNumber varchar(255),
-    Constraint Administration_PK PRIMARY KEY (EmployeeID)
-);
-
-
 CREATE TABLE Clients (
     ClientID int,
     FirstName varchar(255),
@@ -55,11 +38,13 @@ CREATE TABLE Vehicles (
     Constraint Vehicles_PK PRIMARY KEY (VehicleID)
 );
 
-CREATE TABLE Drivers (
-    DriverID int,
+CREATE TABLE Employees (
+    EmployeeID int,
     FirstName varchar(255),
     LastName varchar(255),
     BirthDate date,
+    EducationalBackground varchar(255),
+    JobTitle varchar(255),
     HireDate date,
     Salary int,
     DefaultVehicle int,
@@ -68,17 +53,28 @@ CREATE TABLE Drivers (
     Country varchar(255),
     City varchar(255),
     BankAccountNumber varchar(255),
-    Constraint Drivers_PK PRIMARY KEY (DriverID),
+    Constraint Employees_PK PRIMARY KEY (EmployeeID),
     constraint DriversVehicle_FK FOREIGN KEY (DefaultVehicle) REFERENCES Vehicles(VehicleID)
 );
 
-CREATE TABLE Outgoing_Transactions (
-    OUTTransactionID int,
+CREATE TABLE Out_Transactions_Commissions (
+    OUTTransactionCommID int,
     TransactionType varchar(255),
-    Transactor varchar(255),
+    TransactorID int,
     Amount int,
     TransactionDate date,
-    Constraint Outgoing_Transactions_PK PRIMARY KEY (OUTTransactionID)
+    Constraint Outgoing_Transactions_Comm_PK PRIMARY KEY (OUTTransactionCommID),
+    Constraint Outgoing_Transactor_Comm_FK FOREIGN KEY (TransactorID) REFERENCES Contractors(ContractorID)
+);
+
+CREATE TABLE Out_Transactions_Employees (
+    OUTTransactionEmpID int,
+    TransactionType varchar(255),
+    TransactorID int,
+    Amount int,
+    TransactionDate date,
+    Constraint Outgoing_Transactions_Emp_PK PRIMARY KEY (OUTTransactionEmpID),
+    Constraint Outgoing_Transactor_Emp_FK FOREIGN KEY (TransactorID) REFERENCES Employees(EmployeeID)
 );
 
 CREATE TABLE Incoming_Transactions (
@@ -107,7 +103,7 @@ CREATE TABLE Order_Details(
     MaturityDate date,
     Constraint Order_Details_PK PRIMARY KEY (OrderID),
     constraint Order_DetailsClient_FK FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
-    constraint Order_DetailsDriver_FK FOREIGN KEY (DriverID) REFERENCES Drivers(DriverID),
+    constraint Order_DetailsDriver_FK FOREIGN KEY (DriverID) REFERENCES Employees(EmployeeID),
     constraint Order_DetailsVehicle_FK FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID)
 );
 
@@ -119,7 +115,7 @@ CREATE TABLE Orders (
     INTransactionID int, 
     constraint OrdersOrder_FK FOREIGN KEY (OrderID) REFERENCES Order_Details(OrderID),
     constraint OrdersVehicle_FK FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID),
-    constraint OrdersDriver_FK FOREIGN KEY (DriverID) REFERENCES Drivers(DriverID),
+    constraint OrdersDriver_FK FOREIGN KEY (DriverID) REFERENCES Employees(EmployeeID),
     constraint OrdersClient_FK FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
     constraint OrdersINTransaction_FK FOREIGN KEY (INTransactionID) REFERENCES Incoming_Transactions(INTransactionID)
 );
