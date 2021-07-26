@@ -5,7 +5,7 @@ CREATE TABLE Clients (
     LastName varchar(255),
     PhoneNumber int,
     Discount double(2,1),
-    Constraint Clients_PK PRIMARY KEY (ClientID)
+    CONSTRAINT Clients_PK PRIMARY KEY (ClientID)
 );
 
 CREATE TABLE Contractors (
@@ -13,7 +13,7 @@ CREATE TABLE Contractors (
     ContractorName varchar(255),
     PhoneNumber int,
     City varchar(255),
-    Constraint Contractors_PK PRIMARY KEY (ContractorID)
+    CONSTRAINT Contractors_PK PRIMARY KEY (ContractorID)
 );
 
 CREATE TABLE Commissions (
@@ -23,8 +23,8 @@ CREATE TABLE Commissions (
     CommisionDate date,
     Price int,
     MaturityDate date,
-    Constraint Commissions_PK PRIMARY KEY (CommissionID),
-    constraint CommissionsContractor_FK FOREIGN KEY (ContractorID) REFERENCES Contractors(ContractorID)
+    CONSTRAINT Commissions_PK PRIMARY KEY (CommissionID),
+    CONSTRAINT CommissionsContractor_FK FOREIGN KEY (ContractorID) REFERENCES Contractors(ContractorID)
 );
 
 CREATE TABLE Vehicles (
@@ -35,7 +35,7 @@ CREATE TABLE Vehicles (
     Capacity varchar(255),
     LastServiceDate date,
     InsuranceNumber varchar(255),
-    Constraint Vehicles_PK PRIMARY KEY (VehicleID)
+    CONSTRAINT Vehicles_PK PRIMARY KEY (VehicleID)
 );
 
 CREATE TABLE Employees (
@@ -53,28 +53,27 @@ CREATE TABLE Employees (
     Country varchar(255),
     City varchar(255),
     BankAccountNumber varchar(255),
-    Constraint Employees_PK PRIMARY KEY (EmployeeID),
-    constraint DriversVehicle_FK FOREIGN KEY (DefaultVehicle) REFERENCES Vehicles(VehicleID)
+    CONSTRAINT Employees_PK PRIMARY KEY (EmployeeID),
+    CONSTRAINT DriversVehicle_FK FOREIGN KEY (DefaultVehicle) REFERENCES Vehicles(VehicleID)
 );
 
-CREATE TABLE Out_Transactions_Commissions (
-    OUTTransactionCommID int,
+CREATE TABLE Out_Transactors (
+	TransactorID int,
+    EmployeeID int,
+    ContractorID int, 
+    CONSTRAINT Out_Transactors_PK PRIMARY KEY (TransactorID),
+    CONSTRAINT EmployeeID_FK FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),
+    CONSTRAINT ContractorID_FK FOREIGN KEY (ContractorID) REFERENCES Contractors(ContractorID)
+);
+
+CREATE TABLE Outgoing_Transactions (
+    OUTTransactionID int,
     TransactionType varchar(255),
     TransactorID int,
     Amount int,
     TransactionDate date,
-    Constraint Outgoing_Transactions_Comm_PK PRIMARY KEY (OUTTransactionCommID),
-    Constraint Outgoing_Transactor_Comm_FK FOREIGN KEY (TransactorID) REFERENCES Contractors(ContractorID)
-);
-
-CREATE TABLE Out_Transactions_Employees (
-    OUTTransactionEmpID int,
-    TransactionType varchar(255),
-    TransactorID int,
-    Amount int,
-    TransactionDate date,
-    Constraint Outgoing_Transactions_Emp_PK PRIMARY KEY (OUTTransactionEmpID),
-    Constraint Outgoing_Transactor_Emp_FK FOREIGN KEY (TransactorID) REFERENCES Employees(EmployeeID)
+    CONSTRAINT Outgoing_Transactions_PK PRIMARY KEY (OUTTransactionID),
+    CONSTRAINT Outgoing_Transactor_FK FOREIGN KEY (TransactorID) REFERENCES Out_Transactors(TransactorID)
 );
 
 CREATE TABLE Incoming_Transactions (
